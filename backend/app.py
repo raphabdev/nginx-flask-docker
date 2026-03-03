@@ -21,7 +21,7 @@ def info():
     return jsonify({
         "app": "nginx-flask-demo",
         "version": "1.0.0",
-        "author": "Raphael Barbosa",
+        "author": "raphabdev",
         "stack": ["Nginx", "Python", "Flask", "Docker"]
     })
 
