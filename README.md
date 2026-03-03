@@ -107,6 +107,3 @@ docker compose down
 | Docker Compose | v2 | Orquestração |
 
 ---
-
-**Autor:** Raphael Barbosa  
-**LinkedIn:** [linkedin.com/in/seu-perfil](https://linkedin.com/in/seu-perfil)
