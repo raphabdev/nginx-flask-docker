@@ -26,7 +26,7 @@ Projeto de demonstração de uma arquitetura com **Nginx como reverse proxy** pa
 
 ```bash
 # Clonar o repositório
-git clone https://github.com/seu-usuario/nginx-flask-docker.git
+git clone https://github.com/raphabdev/nginx-flask-docker.git
 cd nginx-flask-docker
 
 # Subir os containers
