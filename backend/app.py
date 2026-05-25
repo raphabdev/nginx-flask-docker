@@ -7,7 +7,7 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     return jsonify({
-        "message": "API rodando com sucesso!",
+        "message": "API is running successfully!",
         "hostname": socket.gethostname(),
         "environment": os.getenv("ENVIRONMENT", "development")
     })
@@ -21,7 +21,7 @@ def info():
     return jsonify({
         "app": "nginx-flask-demo",
         "version": "1.0.0",
-        "author": "raphabdev",
+        "author": "raphadevops",
         "stack": ["Nginx", "Python", "Flask", "Docker"]
     })
 
