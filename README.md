@@ -1,109 +1,134 @@
-# 🐳 Nginx + Flask com Docker Compose
+# 🐳 Nginx + Flask with Docker Compose
 
-Projeto de demonstração de uma arquitetura com **Nginx como reverse proxy** para uma aplicação **Python/Flask**, orquestrado via **Docker Compose**.
+A demonstration project of a multi-container architecture using **Nginx as a reverse proxy** for a Python/Flask application, orchestrated with Docker Compose.
 
-## 🏗️ Arquitetura
+---
+
+## 🏗️ Architecture
 
 ```
-                    ┌─────────────┐
-      HTTP :80      │             │     HTTP :5000
-  ───────────────►  │    Nginx    │  ───────────────►  Flask (Gunicorn)
-                    │  (Proxy)    │
-                    └─────────────┘
+                   ┌─────────────┐
+     HTTP :80      │             │    HTTP :5000
+ ──────────────►   │    Nginx    │ ──────────────►  Flask (Gunicorn)
+                   │   (Proxy)   │
+                   └─────────────┘
 ```
 
-- **Nginx**: Recebe as requisições externas e faz o proxy reverso para o backend
-- **Flask + Gunicorn**: Aplicação Python rodando em modo produção com 2 workers
-- **Docker Network**: Comunicação interna isolada entre os containers
+| Component | Role |
+|---|---|
+| **Nginx** | Receives external requests and forwards them to the backend via reverse proxy |
+| **Flask + Gunicorn** | Python application running in production mode with 2 workers |
+| **Docker Network** | Isolated internal communication between containers (bridge) |
 
-## 🚀 Como rodar
+---
 
-### Pré-requisitos
+## 🚀 Getting Started
+
+### Prerequisites
+
 - Docker >= 24.x
 - Docker Compose >= 2.x
 
-### Subindo o ambiente
+### Running the project
 
 ```bash
-# Clonar o repositório
-git clone https://github.com/raphabdev/nginx-flask-docker.git
+# Clone the repository
+git clone https://github.com/raphadevops/nginx-flask-docker.git
 cd nginx-flask-docker
 
-# Subir os containers
+# Build and start the containers
 docker compose up -d --build
 
-# Verificar status
+# Check running services
 docker compose ps
 ```
 
-### Testando os endpoints
+---
+
+## 🔗 Available Endpoints
+
+| Endpoint | Description |
+|---|---|
+| `GET /` | Returns app status, container hostname and environment |
+| `GET /health` | Application health check — returns `{ "status": "healthy" }` |
+| `GET /info` | App metadata: name, version, author and stack |
+| `GET /nginx-health` | Nginx health check — responds directly without hitting Flask |
+
+### Testing
 
 ```bash
-# Endpoint principal
+# Main endpoint
 curl http://localhost/
 
-# Health check da aplicação
+# Application health check
 curl http://localhost/health
 
-# Informações da app
+# App info
 curl http://localhost/info
 
-# Health check do Nginx
+# Nginx health check
 curl http://localhost/nginx-health
 ```
 
-### Visualizando logs
+---
+
+## 📋 Useful Commands
 
 ```bash
-# Todos os serviços
+# View logs from all services
 docker compose logs -f
 
-# Apenas o nginx
+# View logs from a specific service
 docker compose logs -f nginx
-
-# Apenas o backend
 docker compose logs -f backend
-```
 
-### Derrubando o ambiente
-
-```bash
+# Stop and remove containers
 docker compose down
 ```
 
-## 📁 Estrutura do projeto
+---
+
+## 📁 Project Structure
 
 ```
-.
+nginx-flask-docker/
 ├── backend/
-│   ├── app.py            # Aplicação Flask
-│   ├── requirements.txt  # Dependências Python
-│   └── Dockerfile        # Imagem do backend
+│   ├── app.py              # Flask application with 3 routes
+│   ├── requirements.txt    # Python dependencies (Flask + Gunicorn)
+│   └── Dockerfile          # Backend image — python:3.12-slim
 ├── nginx/
-│   └── nginx.conf        # Configuração do reverse proxy
-├── docker-compose.yml    # Orquestração dos serviços
+│   └── nginx.conf          # Reverse proxy configuration
+├── docker-compose.yml      # Services orchestration
 └── README.md
 ```
 
-## 🔍 Conceitos demonstrados
+---
 
-- **Reverse Proxy** com Nginx
-- **Multi-container** com Docker Compose
-- **Health Check** nativo do Docker
-- **Networks isoladas** entre serviços
-- **Variáveis de ambiente** por container
-- **Usuário não-root** no container (segurança)
-- **Cache de layers** no Dockerfile (otimização de build)
-- **Gunicorn** como servidor WSGI de produção
+## 🔍 Key Concepts Demonstrated
 
-## 🛠️ Tecnologias
+- **Reverse Proxy** — Nginx forwards all traffic to Flask internally
+- **Multi-container orchestration** — Docker Compose managing two services
+- **Native health check** — Docker monitors Flask before starting Nginx (`depends_on: condition: service_healthy`)
+- **Isolated network** — containers communicate by service name, not IP (`app_network` bridge)
+- **Environment variables** — `ENVIRONMENT=production` injected via Compose
+- **Non-root user** — Flask runs as `appuser` inside the container (security best practice)
+- **Dockerfile layer caching** — `requirements.txt` copied before `app.py` to avoid reinstalling dependencies on every code change
+- **Gunicorn as WSGI server** — production-grade server with 2 workers replacing Flask's built-in development server
 
-| Tecnologia | Versão | Papel |
+---
+
+## 🛠️ Tech Stack
+
+| Technology | Version | Role |
 |---|---|---|
 | Nginx | 1.25 Alpine | Reverse Proxy |
 | Python | 3.12 Slim | Runtime |
 | Flask | 3.0.3 | Web Framework |
 | Gunicorn | 22.0.0 | WSGI Server |
-| Docker Compose | v2 | Orquestração |
+| Docker Compose | v2 | Orchestration |
 
 ---
+
+## 👤 Author
+
+**Raphael** — [raphadevops](https://github.com/raphadevops)
