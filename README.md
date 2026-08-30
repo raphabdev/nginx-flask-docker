@@ -1,10 +1,10 @@
-# 🐳 Nginx + Flask with Docker Compose
+# 🐳 Nginx + Flask com Docker Compose
 
-A demonstration project of a multi-container architecture using **Nginx as a reverse proxy** for a Python/Flask application, orchestrated with Docker Compose.
+Projeto de demonstração de uma arquitetura multi-container usando **Nginx como reverse proxy** para uma aplicação Python/Flask, orquestrada com Docker Compose.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Arquitetura
 
 ```
                    ┌─────────────┐
@@ -14,121 +14,131 @@ A demonstration project of a multi-container architecture using **Nginx as a rev
                    └─────────────┘
 ```
 
-| Component | Role |
+| Componente | Função |
 |---|---|
-| **Nginx** | Receives external requests and forwards them to the backend via reverse proxy |
-| **Flask + Gunicorn** | Python application running in production mode with 2 workers |
-| **Docker Network** | Isolated internal communication between containers (bridge) |
+| **Nginx** | Recebe as requisições externas e as repassa para o backend via reverse proxy |
+| **Flask + Gunicorn** | Aplicação Python rodando em modo produção com 2 workers |
+| **Docker Network** | Comunicação interna isolada entre containers (bridge) |
 
 ---
 
-## 🚀 Getting Started
+## 🔄 Próximo Passo Nesta Série
 
-### Prerequisites
+Este projeto demonstra orquestração em host único com Docker Compose. Para a evolução natural — orquestração multi-node com Docker Swarm, balanceamento de carga entre réplicas, banco de dados persistente, gerenciamento de secrets e rolling update com zero downtime — confira:
+
+**[nginx-flask-swarm](https://github.com/raphadevops/nginx-flask-swarm)**
+
+---
+
+## 🚀 Como Executar
+
+### Pré-requisitos
 
 - Docker >= 24.x
 - Docker Compose >= 2.x
 
-### Running the project
+### Executando o projeto
 
 ```bash
-# Clone the repository
+# Clonar o repositório
 git clone https://github.com/raphadevops/nginx-flask-docker.git
 cd nginx-flask-docker
 
-# Build and start the containers
+# Construir e iniciar os containers
 docker compose up -d --build
 
-# Check running services
+# Verificar os serviços em execução
 docker compose ps
 ```
 
 ---
 
-## 🔗 Available Endpoints
+## 🔗 Endpoints Disponíveis
 
-| Endpoint | Description |
+| Endpoint | Descrição |
 |---|---|
-| `GET /` | Returns app status, container hostname and environment |
-| `GET /health` | Application health check — returns `{ "status": "healthy" }` |
-| `GET /info` | App metadata: name, version, author and stack |
-| `GET /nginx-health` | Nginx health check — responds directly without hitting Flask |
+| `GET /` | Retorna status da aplicação, hostname do container e ambiente |
+| `GET /health` | Health check da aplicação — retorna `{ "status": "healthy" }` |
+| `GET /info` | Metadados da aplicação: nome, versão, autor e stack |
+| `GET /nginx-health` | Health check do Nginx — responde diretamente, sem passar pelo Flask |
 
-### Testing
+### Testando
 
 ```bash
-# Main endpoint
+# Endpoint principal
 curl http://localhost/
 
-# Application health check
+# Health check da aplicação
 curl http://localhost/health
 
-# App info
+# Informações da aplicação
 curl http://localhost/info
 
-# Nginx health check
+# Health check do Nginx
 curl http://localhost/nginx-health
 ```
 
 ---
 
-## 📋 Useful Commands
+## 📋 Comandos Úteis
 
 ```bash
-# View logs from all services
+# Ver logs de todos os serviços
 docker compose logs -f
 
-# View logs from a specific service
+# Ver logs de um serviço específico
 docker compose logs -f nginx
 docker compose logs -f backend
 
-# Stop and remove containers
+# Parar e remover os containers
 docker compose down
 ```
 
 ---
 
-## 📁 Project Structure
+## 📁 Estrutura do Projeto
 
 ```
 nginx-flask-docker/
 ├── backend/
-│   ├── app.py              # Flask application with 3 routes
-│   ├── requirements.txt    # Python dependencies (Flask + Gunicorn)
-│   └── Dockerfile          # Backend image — python:3.12-slim
+│   ├── app.py              # Aplicação Flask com 3 rotas
+│   ├── requirements.txt    # Dependências Python (Flask + Gunicorn)
+│   ├── Dockerfile          # Imagem do backend — python:3.12-slim
+│   └── .dockerignore       # Exclui arquivos desnecessários do build
 ├── nginx/
-│   └── nginx.conf          # Reverse proxy configuration
-├── docker-compose.yml      # Services orchestration
+│   └── nginx.conf          # Configuração do reverse proxy
+├── docker-compose.yml      # Orquestração dos serviços
 └── README.md
 ```
 
 ---
 
-## 🔍 Key Concepts Demonstrated
+## 🔍 Conceitos-Chave Demonstrados
 
-- **Reverse Proxy** — Nginx forwards all traffic to Flask internally
-- **Multi-container orchestration** — Docker Compose managing two services
-- **Native health check** — Docker monitors Flask before starting Nginx (`depends_on: condition: service_healthy`)
-- **Isolated network** — containers communicate by service name, not IP (`app_network` bridge)
-- **Environment variables** — `ENVIRONMENT=production` injected via Compose
-- **Non-root user** — Flask runs as `appuser` inside the container (security best practice)
-- **Dockerfile layer caching** — `requirements.txt` copied before `app.py` to avoid reinstalling dependencies on every code change
-- **Gunicorn as WSGI server** — production-grade server with 2 workers replacing Flask's built-in development server
+- **Reverse Proxy** — Nginx repassa todo o tráfego para o Flask internamente
+- **Orquestração multi-container** — Docker Compose gerenciando dois serviços
+- **Health check nativo** — Docker monitora o Flask antes de subir o Nginx (`depends_on: condition: service_healthy`)
+- **Rede isolada** — containers se comunicam pelo nome do serviço, não por IP (`app_network` bridge)
+- **Variáveis de ambiente** — `ENVIRONMENT=production` injetada via Compose
+- **Usuário non-root** — Flask roda como `appuser` dentro do container (boa prática de segurança)
+- **Cache de camadas do Dockerfile** — `requirements.txt` copiado antes de `app.py` para evitar reinstalar dependências a cada mudança de código
+- **Gunicorn como servidor WSGI** — servidor de produção com 2 workers, substituindo o servidor de desenvolvimento nativo do Flask
+- **Limites de recursos** — `deploy.resources.limits` define teto de memória por serviço
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Stack Tecnológica
 
-| Technology | Version | Role |
+| Tecnologia | Versão | Função |
 |---|---|---|
 | Nginx | 1.25 Alpine | Reverse Proxy |
 | Python | 3.12 Slim | Runtime |
 | Flask | 3.0.3 | Web Framework |
-| Gunicorn | 22.0.0 | WSGI Server |
-| Docker Compose | v2 | Orchestration |
+| Gunicorn | 22.0.0 | Servidor WSGI |
+| Docker Compose | v2 | Orquestração |
 
 ---
 
-## 👤 Author
+## 👤 Autor
 
 **Raphael** — [raphadevops](https://github.com/raphadevops)
