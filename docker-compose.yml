@@ -9,6 +9,10 @@ services:
     networks:
       - app_network
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
@@ -29,6 +33,10 @@ services:
     networks:
       - app_network
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 64M
 
 networks:
   app_network:
